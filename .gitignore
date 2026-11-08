@@ -1,0 +1,19 @@
+# Entorno virtual
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Videos descargados y keypoints extraídos (pesados; no se suben a GitHub)
+videos/
+data/
+
+# Modelo entrenado (quita estas líneas si quieres subirlo)
+*.keras
+etiquetas.json
+
+# Editor / sistema
+.vscode/
+.DS_Store
