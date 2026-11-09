@@ -51,15 +51,24 @@ def main():
         print("No se encontraron datos válidos. Ejecuta primero: python 1_extraer_keypoints.py")
         return
 
-    print("Señas:", senas)
+    print("Señas encontradas:")
     for i, s in enumerate(senas):
         print(f"  {s}: {int((y == i).sum())} videos")
-    if len(senas) < 2:
-        print("Necesitas al menos 2 señas distintas para entrenar.")
+
+    # Se ignoran las carpetas con menos de 2 videos (vacías o ajenas al proyecto)
+    validas = [i for i in range(len(senas)) if int((y == i).sum()) >= 2]
+    ignoradas = [senas[i] for i in range(len(senas)) if i not in validas]
+    if ignoradas:
+        print("\nSe ignoran por tener menos de 2 videos:", ignoradas)
+    if len(validas) < 2:
+        print("Necesitas al menos 2 señas con 2 o más videos cada una (idealmente 20 o más).")
         return
-    if min(int((y == i).sum()) for i in range(len(senas))) < 2:
-        print("Cada seña necesita al menos 2 videos (idealmente 20 o más).")
-        return
+    mascara = np.isin(y, validas)
+    mapa = {viejo: nuevo for nuevo, viejo in enumerate(validas)}
+    X = X[mascara]
+    y = np.array([mapa[v] for v in y[mascara]])
+    senas = [senas[i] for i in validas]
+    print("\nSe entrenará con:", senas)
 
     n_test = max(int(0.2 * len(X)), len(senas))
     X_train, X_test, y_train, y_test = train_test_split(
